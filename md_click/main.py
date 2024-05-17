@@ -77,22 +77,25 @@ def dump_helper(base_command, docs_dir):
             description=command.help,
             usage=usage,
             options="\n".join([
-                f"* `{opt_name}`{' (REQUIRED)' if opt.get('required') else ''}: \n"
-                f"  * Type: {opt.get('type')} \n"
-                f"  * Default: `{str(opt.get('default'))}`\n"
-                f"  * Usage: `{opt.get('usage')}`\n"
-                "\n"
-                f"  {opt.get('help') or ''}\n"
-                f"\n"
+                f"""
+* `{opt_name}`{' (REQUIRED)' if opt.get('required') else ''}:
+    * Type: {opt.get('type')}
+    * Default: `{str(opt.get('default'))}`
+    * Usage: `{opt.get('usage')}`
+
+    {opt.get('help') or ''}
+
+"""
                 for opt_name, opt in options.items()
             ]),
             help=helptxt,
             arguments="\n".join([
-                f"* `{arg_name}`{' (REQUIRED)' if arg.get('required') else ''}: \n"
-                f"  * Type: {arg.get('type')} \n"
-                f"  * Default: `{str(arg.get('default'))}`\n"
-                f"  * Usage: `{arg.get('usage')}`\n"
-                "\n"
+                f"""
+* `{arg_name}`{' (REQUIRED)' if arg.get('required') else ''}:
+    * Type: {arg.get('type')}
+    * Default: `{str(arg.get('default'))}`
+    * Usage: `{arg.get('usage')}`
+"""
                 for arg_name, arg in arguments.items()
             ]),
         )
