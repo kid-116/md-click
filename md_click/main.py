@@ -13,6 +13,9 @@ md_base_template = """
 {usage}
 ```
 
+## Arguments
+{arguments}
+
 ## Options
 {options}
 
@@ -56,7 +59,16 @@ def dump_helper(base_command, docs_dir):
                 "help": opt.help,
                 "type": str(opt.type)
             }
-            for opt in helpdct.get('params', [])
+            for opt in helpdct.get('params', []) if isinstance(opt, click.core.Option)
+        }
+        arguments = {
+            arg.name: {
+                "usage": '\n'.join(arg.opts),
+                "required": arg.required,
+                "default": arg.default,
+                "type": str(arg.type)
+            }
+            for arg in helpdct.get('params', []) if isinstance(arg, click.core.Argument)
         }
         full_command = f"{str(parent) + ' ' if parent else ''}{str(command.name)}"
 
@@ -67,14 +79,22 @@ def dump_helper(base_command, docs_dir):
             options="\n".join([
                 f"* `{opt_name}`{' (REQUIRED)' if opt.get('required') else ''}: \n"
                 f"  * Type: {opt.get('type')} \n"
-                f"  * Default: `{str(opt.get('default')).lower()}`\n"
+                f"  * Default: `{str(opt.get('default'))}`\n"
                 f"  * Usage: `{opt.get('usage')}`\n"
                 "\n"
                 f"  {opt.get('help') or ''}\n"
                 f"\n"
                 for opt_name, opt in options.items()
             ]),
-            help=helptxt
+            help=helptxt,
+            arguments="\n".join([
+                f"* `{arg_name}`{' (REQUIRED)' if arg.get('required') else ''}: \n"
+                f"  * Type: {arg.get('type')} \n"
+                f"  * Default: `{str(arg.get('default'))}`\n"
+                f"  * Usage: `{arg.get('usage')}`\n"
+                "\n"
+                for arg_name, arg in arguments.items()
+            ]),
         )
 
         if not docs_path.exists():
